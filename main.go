@@ -12,9 +12,6 @@ import (
 )
 
 func convertImage(format string, inputPath string, outputPath string) error {
-	imagick.Initialize()
-	defer imagick.Terminate()
-
 	mw := imagick.NewMagickWand()
 	defer mw.Destroy()
 
@@ -72,6 +69,9 @@ func convertToWebPHandler(c echo.Context) error {
 }
 
 func main() {
+	imagick.Initialize()
+	defer imagick.Terminate()
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

@@ -2,20 +2,69 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"log"
+	"net/http"
+	"sync"
 )
 
-func routine() {
-	count := 0
-	for i := 0; i < 1000; i++ {
-		count += 1
+type KeyValueStore struct {
+	store map[string]string
+	mutex sync.RWMutex
+}
+
+func (kv *KeyValueStore) SetHandler(w http.ResponseWriter, r *http.Request) {
+	kv.mutex.Lock()
+	defer kv.mutex.Unlock()
+
+	key := r.URL.Query().Get("key")
+	value := r.URL.Query().Get("value")
+	if key == "" || value == "" {
+		http.Error(w, "Missing k or v", http.StatusBadRequest)
+		return
 	}
 
-	fmt.Println("This is the first go routine")
+	kv.store[key] = value
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Set key : %s and value : %s", key, value)
+}
+
+func (kv *KeyValueStore) GetHandler(w http.ResponseWriter, r *http.Request) {
+	kv.mutex.Lock()
+	defer kv.mutex.Unlock()
+
+	key := r.URL.Query().Get("key")
+	value, exists := kv.store[key]
+	if !exists {
+		http.Error(w, "Key Not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Value for key : %s is %s", key, value)
+}
+
+func (kv *KeyValueStore) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+	kv.mutex.Lock()
+	defer kv.mutex.Unlock()
+
+	key := r.URL.Query().Get("key")
+	_, exists := kv.store[key]
+	if !exists {
+		http.Error(w, "Key not found", http.StatusNotFound)
+		return
+	}
+	delete(kv.store, key)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Deleted key: %s", key)
 }
 
 func main() {
-	go routine()
-	fmt.Println("Hi, this is the playground for Go")
-	time.Sleep(1000 * time.Millisecond)
+	kv := KeyValueStore{store: make(map[string]string)}
+
+	http.HandleFunc("/set", kv.SetHandler)
+	http.HandleFunc("/get", kv.GetHandler)
+	http.HandleFunc("/delete", kv.DeleteHandler)
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
+

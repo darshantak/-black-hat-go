@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"sync"
 )
@@ -59,12 +58,13 @@ func (kv *KeyValueStore) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	kv := KeyValueStore{store: make(map[string]string)}
+	// kv := KeyValueStore{store: make(map[string]string)}
 
-	http.HandleFunc("/set", kv.SetHandler)
-	http.HandleFunc("/get", kv.GetHandler)
-	http.HandleFunc("/delete", kv.DeleteHandler)
+	// http.HandleFunc("/set", kv.SetHandler)
+	// http.HandleFunc("/get", kv.GetHandler)
+	// http.HandleFunc("/delete", kv.DeleteHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// log.Fatal(http.ListenAndServe(":8080", nil))
+
+	runRW()
 }
-

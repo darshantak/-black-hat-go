@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fastline/exercises"
 	"fmt"
 	"net/http"
 	"sync"
@@ -113,6 +114,13 @@ func main() {
 
 	// runRW()
 	// runPipeline()
-	
-	runGenerator()
+
+	// runGenerator()
+
+	// runMutex()
+
+	// runDone()
+
+	exercises.RunExec5()
+
 }

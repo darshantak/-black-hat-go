@@ -3,33 +3,37 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
-var lock sync.Mutex
+func processWithTime(n int) int {
+	// time.Sleep(time.Second * 2)
+	return n * 2
+}
 
-func processData(wg *sync.WaitGroup, result *[]int, data int) {
+func processData(wg *sync.WaitGroup, result *int, data int) {
 	defer wg.Done()
-	processedData := data * 2
+	processedData := processWithTime(data)
 
-	lock.Lock()
-	*result = append(*result, processedData)
-	lock.Unlock()
+	*result = processedData
 }
 
 func runMutex() {
+	start := time.Now()
 	var wg sync.WaitGroup
 
 	input := []int{1, 2, 3, 4, 5}
 
 	//the result array is the shared resource
-	result := []int{}
+	result := make([]int, len(input))
 	//TODO: put the input into result
 
-	for _, i := range input {
+	for i, data := range input {
 		wg.Add(1)
-		go processData(&wg, &result, i)
+		go processData(&wg, &result[i], data)
 	}
 
 	wg.Wait()
+	fmt.Println(time.Since(start))
 	fmt.Println(result)
 }

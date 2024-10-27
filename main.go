@@ -121,6 +121,6 @@ func main() {
 
 	// runDone()
 
-	exercises.RunExec5()
-
+	exercises.RunExec6()
+	
 }

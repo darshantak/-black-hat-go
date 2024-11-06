@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fastline/exercises"
 	"fmt"
 	"net/http"
 	"sync"
@@ -121,6 +120,11 @@ func main() {
 
 	// runDone()
 
-	exercises.RunExec6()
-	
+	// exercises.RunExec6()
+	visited := make([][]bool, 4)
+	// for i := range visited {
+	// 	visited[i] = make([]bool, 4)
+	// }
+
+	fmt.Println(visited)
 }

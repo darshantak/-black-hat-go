@@ -21,10 +21,11 @@ func main() {
 	}
 
 	exerciseId := os.Args[1]
-	if exercise, exists := exerciseMapper[exerciseId] ; exists{
-		fmt.Printf("Running %s....",exerciseId)
+	if exercise, exists := exerciseMapper[exerciseId]; exists {
+		fmt.Printf("Running %s....", exerciseId)
 		exercise()
-	} else{
+	} else {
 		fmt.Println("Exercise not found")
 	}
+
 }
